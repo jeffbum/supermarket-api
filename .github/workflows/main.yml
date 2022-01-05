@@ -22,11 +22,9 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-  test:
+  security:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: OWASP ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.3.0
-      with:
-        target: "http://localhost:8080/api/v1"
+    - name: GP Security Scan
+      uses: whitesource/GitHubPackagesSecurityAction@19.10.2
