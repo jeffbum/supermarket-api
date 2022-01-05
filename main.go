@@ -47,7 +47,7 @@ func post(w http.ResponseWriter, r *http.Request) {
             w.Write([]byte(`{"error": "missing unit price field"}`))
             return
         }
-        re, _ := regexp.Compile("^[A-Z0-9][A-Z0-9-]*$")
+        re, _ := regexp.Compile("^[a-zA-Z0-9][a-zA-Z0-9-]*$")
         if (p.ProduceCode == "" || !re.MatchString(p.ProduceCode) || len(p.ProduceCode) != 19) {
             w.WriteHeader(http.StatusBadRequest)
             w.Write([]byte(`{"error": "error with the produceCode field"}`))
