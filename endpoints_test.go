@@ -23,7 +23,7 @@ func TestGetProduce(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	expected := `[{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":"$1.23"},{"produceCode":"yr7k-b6ku-sruk-mnd6","name":"Orange","unitPrice":"$2.45"}]`
+	expected := `[{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":1.23},{"produceCode":"yr7k-b6ku-sruk-mnd6","name":"Orange","unitPrice":2.45}]`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
@@ -48,7 +48,7 @@ func TestGetProduceById(t *testing.T) {
 	}
 
 	// Check the response body is what we expect.
-	expected := `{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":"$1.23"}`
+	expected := `{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":1.23}`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
@@ -93,7 +93,7 @@ func TestDeleteEntry(t *testing.T) {
 
 func TestCreateEntry(t *testing.T) {
 
-	var jsonStr = []byte(`{"name":"Oatmeal","unitPrice":"$2.59"}`)
+	var jsonStr = []byte(`{"name":"Oatmeal","unitPrice":2.59}`)
 
 	req, err := http.NewRequest("POST", "/produce", bytes.NewBuffer(jsonStr))
 	if err != nil {
@@ -110,7 +110,7 @@ func TestCreateEntry(t *testing.T) {
 	var produce Produce
 	json.NewDecoder(rr.Body).Decode(&produce)
 
-	if produce.Name != "Oatmeal" || produce.UnitPrice != "$2.59" {
+	if produce.Name != "Oatmeal" || produce.UnitPrice != 2.59 {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), produce)
 	}
