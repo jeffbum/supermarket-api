@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -38,7 +37,6 @@ func post(w http.ResponseWriter, r *http.Request) {
         return
      }
      for _, p := range produce {
-         p.ProduceCode = strings.ToUpper(p.ProduceCode)
         if (p.Name == "") {
             w.WriteHeader(http.StatusBadRequest)
             w.Write([]byte(`{"error": "missing name field"}`))
