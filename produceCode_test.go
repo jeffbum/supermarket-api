@@ -28,8 +28,8 @@ func TestCreationOfProduceCodeNumberOfHypens(t *testing.T) {
 		t.Errorf("there were no hypens in the produce code.")
 	}
 	replaced := re.ReplaceAllString(produceCode, "")
-	length := len(replaced)
-	if  length != 16 {
-		t.Errorf("Got %d, expected %d. They should be the same.", length, 16)
+	length := 19 -len(replaced)
+	if  length != 3 {
+		t.Errorf("Got %d, expected %d. They should be the same.", length, 3)
 	}
 }
