@@ -4,24 +4,21 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
 
-type CreateProduce struct {
-    Name       string `json:"name"`
-    UnitPrice  *float64 `json:"unitPrice"`
-}
-
 type Produce struct {
 	ProduceCode string  `json:"produceCode"`
 	Name       string `json:"name"`
-	UnitPrice  float64  `json:"unitPrice"`
+	UnitPrice  float64  `json:"unitPrice, omitempty"`
 }
 
 var produceCollection = []Produce {
-	{"l6m9-5p3n-y5qr-lhel","Apple",1.23},
-	{"yr7k-b6ku-sruk-mnd6","Orange",2.45},
+	{"L6M9-5P3N-Y5QR-LHEL","Apple",1.23},
+	{"YR7K-B6KU-SRUK-MND6","Orange",2.45},
 }
 
 func get(w http.ResponseWriter, r *http.Request) {
@@ -33,25 +30,43 @@ func get(w http.ResponseWriter, r *http.Request) {
 
 func post(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
-    var produce CreateProduce
-    produceCode := createProduceCode()
+    var produce []Produce
     json.NewDecoder(r.Body).Decode(&produce)
-    if (produce.Name == "") {
+     if len(produce) == 0 {
         w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(`{"error": "missing name field"}`))
+        w.Write([]byte(`{"error": "body should be an array of produce"}`))
         return
+     }
+     for _, p := range produce {
+         p.ProduceCode = strings.ToUpper(p.ProduceCode)
+        if (p.Name == "") {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte(`{"error": "missing name field"}`))
+            return
+        }
+        if (p.UnitPrice == 0) {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte(`{"error": "missing unit price field"}`))
+            return
+        }
+        re, _ := regexp.Compile("^[A-Z0-9][A-Z0-9-]*$")
+        if (p.ProduceCode == "" || !re.MatchString(p.ProduceCode) || len(p.ProduceCode) != 19) {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte(`{"error": "error with the produceCode field"}`))
+            return
+        }
+        go createProduce(p)
+     }
+     w.WriteHeader(http.StatusCreated)
+        newProduceBytes, _ := json.Marshal(produce)
+        w.Write(newProduceBytes)
+    
+}
 
-    }
-    if (produce.UnitPrice == nil) {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(`{"error": "missing unit price field"}`))
-        return
-    }
-    newProduce := Produce{produceCode, produce.Name, *produce.UnitPrice}
-
-    w.WriteHeader(http.StatusCreated)
-    newProduceBytes, _ := json.Marshal(newProduce)
-    w.Write(newProduceBytes)
+func createProduce(produce Produce) {
+        newProduce := Produce{produce.ProduceCode, produce.Name, produce.UnitPrice}
+        produceCollection = append(produceCollection, newProduce)
+        
 }
 
 func delete(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +104,7 @@ func getOne(w http.ResponseWriter, r *http.Request) {
     if val, ok := pathParams["produceCode"]; ok {
         produceCode = val
         if produceCode == "" {
-            w.WriteHeader(http.StatusInternalServerError)
+            w.WriteHeader(http.StatusBadRequest)
             w.Write([]byte(`{"message": "need a produce code"}`))
             return
         }
@@ -105,6 +120,7 @@ func getOne(w http.ResponseWriter, r *http.Request) {
         return
     }
     newProduceBytes, _ := json.Marshal(produce)
+    w.WriteHeader(http.StatusOK)
     w.Write(newProduceBytes)
 }
 

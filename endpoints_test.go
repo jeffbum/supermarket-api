@@ -23,7 +23,7 @@ func TestGetProduce(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	expected := `[{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":1.23},{"produceCode":"yr7k-b6ku-sruk-mnd6","name":"Orange","unitPrice":2.45}]`
+	expected := `[{"produceCode":"L6M9-5P3N-Y5QR-LHEL","name":"Apple","unitPrice":1.23},{"produceCode":"YR7K-B6KU-SRUK-MND6","name":"Orange","unitPrice":2.45}]`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
@@ -36,7 +36,7 @@ func TestGetProduceById(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	vars := map[string]string{"produceCode": "l6m9-5p3n-y5qr-lhel"}
+	vars := map[string]string{"produceCode": "L6M9-5P3N-Y5QR-LHEL"}
 	req = mux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
@@ -48,7 +48,7 @@ func TestGetProduceById(t *testing.T) {
 	}
 
 	// Check the response body is what we expect.
-	expected := `{"produceCode":"l6m9-5p3n-y5qr-lhel","name":"Apple","unitPrice":1.23}`
+	expected := `{"produceCode":"L6M9-5P3N-Y5QR-LHEL","name":"Apple","unitPrice":1.23}`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
@@ -60,7 +60,7 @@ func TestGetProduceByIdNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	vars := map[string]string{"produceCode": "l6m9-5p3n-y5qr-lhe"}
+	vars := map[string]string{"produceCode": "L6M9-5P3N-Y5QR-LHE"}
 
 	req = mux.SetURLVars(req, vars)
 	rr := httptest.NewRecorder()
@@ -78,7 +78,7 @@ func TestDeleteEntry(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	vars := map[string]string{"produceCode": "l6m9-5p3n-y5qr-lhel"}
+	vars := map[string]string{"produceCode": "L6M9-5P3N-Y5QR-LHEL"}
 
 	req = mux.SetURLVars(req, vars)
 
@@ -93,7 +93,7 @@ func TestDeleteEntry(t *testing.T) {
 
 func TestCreateEntry(t *testing.T) {
 
-	var jsonStr = []byte(`{"name":"Oatmeal","unitPrice":2.59}`)
+	var jsonStr = []byte(`[{"name":"Oatmeal","unitPrice":2.59, "produceCode":"WQ9B-5P3N-Y5QR-LHEL"}]`)
 
 	req, err := http.NewRequest("POST", "/produce", bytes.NewBuffer(jsonStr))
 	if err != nil {
@@ -107,10 +107,10 @@ func TestCreateEntry(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusCreated)
 	}
-	var produce Produce
+	var produce []Produce
 	json.NewDecoder(rr.Body).Decode(&produce)
 
-	if produce.Name != "Oatmeal" || produce.UnitPrice != 2.59 {
+	if produce[0].Name != "Oatmeal" || produce[0].UnitPrice != 2.59 {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), produce)
 	}
