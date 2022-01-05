@@ -10,7 +10,7 @@ import (
 
 type CreateProduce struct {
     Name       string `json:"name"`
-    UnitPrice  *float64 `json:"unitPrice, omitempty"`
+    UnitPrice  *float64 `json:"unitPrice"`
 }
 
 type Produce struct {
