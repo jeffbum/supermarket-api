@@ -20,8 +20,8 @@ type Produce struct {
 }
 
 var produceCollection = []Produce {
-	{"A7Fc-VgWD-7m5S-zb9Z","Apple","$1.23"},
-	{"IgGJ-hHGW-QrWe-sIGY","Orange","$2.45"},
+	{"l6m9-5p3n-y5qr-lhel","Apple","$1.23"},
+	{"yr7k-b6ku-sruk-mnd6","Orange","$2.45"},
 }
 
 func get(w http.ResponseWriter, r *http.Request) {
