@@ -13,7 +13,7 @@ import (
 type Produce struct {
 	ProduceCode string  `json:"produceCode"`
 	Name       string `json:"name"`
-	UnitPrice  float64  `json:"unitPrice, omitempty"`
+	UnitPrice  float64  `json:"unitPrice"`
 }
 
 var produceCollection = []Produce {
