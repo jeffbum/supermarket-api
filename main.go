@@ -10,18 +10,18 @@ import (
 
 type CreateProduce struct {
     Name       string `json:"name"`
-    UnitPrice  string `json:"unitPrice"`
+    UnitPrice  *float64 `json:"unitPrice, omitempty"`
 }
 
 type Produce struct {
 	ProduceCode string  `json:"produceCode"`
 	Name       string `json:"name"`
-	UnitPrice  string  `json:"unitPrice"`
+	UnitPrice  float64  `json:"unitPrice"`
 }
 
 var produceCollection = []Produce {
-	{"l6m9-5p3n-y5qr-lhel","Apple","$1.23"},
-	{"yr7k-b6ku-sruk-mnd6","Orange","$2.45"},
+	{"l6m9-5p3n-y5qr-lhel","Apple",1.23},
+	{"yr7k-b6ku-sruk-mnd6","Orange",2.45},
 }
 
 func get(w http.ResponseWriter, r *http.Request) {
@@ -42,12 +42,12 @@ func post(w http.ResponseWriter, r *http.Request) {
         return
 
     }
-    if (produce.UnitPrice == "") {
+    if (produce.UnitPrice == nil) {
         w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(`{"error": "missing unit price field"}`))
         return
     }
-    newProduce := Produce{produceCode, produce.Name, produce.UnitPrice}
+    newProduce := Produce{produceCode, produce.Name, *produce.UnitPrice}
 
     w.WriteHeader(http.StatusCreated)
     newProduceBytes, _ := json.Marshal(newProduce)
