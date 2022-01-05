@@ -1,68 +1,124 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
+type CreateProduce struct {
+    Name       string `json:"name"`
+    UnitPrice  string `json:"unitPrice"`
+}
+
+type Produce struct {
+    ProduceCode string  `json:"produceCode"`
+    Name       string `json:"name"`
+    UnitPrice  string  `json:"unitPrice"`
+}
+
+var produceCollection = []Produce {
+    {"A7Fc-VgWD-7m5S-zb9Z","Apple","$1.23"},
+    {"IgGJ-hHGW-QrWe-sIGY","Orange","$2.45"},
+}
+
+
 func get(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte(`{"message": "get called"}`))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+    newProduceBytes, _ := json.Marshal(produceCollection)
+    w.Write(newProduceBytes)
 }
 
 func post(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusCreated)
-    w.Write([]byte(`{"message": "post called"}`))
-}
+    var produce CreateProduce
+    produceCode := createProduceCode()
+    json.NewDecoder(r.Body).Decode(&produce)
+    if (produce.Name == "") {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(`{"error": "missing name field"}`))
+        return
 
-func put(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusAccepted)
-    w.Write([]byte(`{"message": "put called"}`))
+    }
+    if (produce.UnitPrice == "") {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(`{"error": "missing unit price field"}`))
+        return
+    }
+    newProduce := Produce{produceCode, produce.Name, produce.UnitPrice}
+
+    w.WriteHeader(http.StatusCreated)
+    newProduceBytes, _ := json.Marshal(newProduce)
+    w.Write(newProduceBytes)
 }
 
 func delete(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte(`{"message": "delete called"}`))
-}
-
-func params(w http.ResponseWriter, r *http.Request) {
     pathParams := mux.Vars(r)
     w.Header().Set("Content-Type", "application/json")
-
     produceCode := ""
-    // var err error
+    if val, ok := pathParams["produceCode"]; ok {
+        produceCode = val
+        if produceCode == "" {
+            w.WriteHeader(http.StatusBadRequest)
+            w.Write([]byte(`{"message": "need a produce code"}`))
+            return
+        }
+    }
+    for i := len(produceCollection) - 1; i >= 0; i-- {
+        produce := produceCollection[i]
+        if (produce.ProduceCode == produceCode) {
+            produceCollection = append(produceCollection[:i],
+                produceCollection[i+1:]...)
+            w.WriteHeader(http.StatusNoContent)
+            w.Write([]byte(`{"message": "produce was successfully deleted"}`))
+            return
+        }
+    }
+    w.WriteHeader(http.StatusNotFound)
+    w.Write([]byte(`{"message": "produce was not found with the provided produceCode"}`))
+    
+}
+
+func getOne(w http.ResponseWriter, r *http.Request) {
+    pathParams := mux.Vars(r)
+    w.Header().Set("Content-Type", "application/json")
+    var produce Produce
+    produceCode := ""
     if val, ok := pathParams["produceCode"]; ok {
         produceCode = val
         if produceCode == "" {
             w.WriteHeader(http.StatusInternalServerError)
-            w.Write([]byte(`{"message": "need a number"}`))
+            w.Write([]byte(`{"message": "need a produce code"}`))
             return
         }
     }
-
-    query := r.URL.Query()
-    location := query.Get("location")
-
-    w.Write([]byte(fmt.Sprintf(`{"produceCode": "%s", "location": "%s" }`, produceCode, location)))
+    for _, p := range produceCollection {
+        if (p.ProduceCode == produceCode) {
+            produce = p
+        }
+    }
+    if (produce.Name == "") {
+        w.WriteHeader(http.StatusNotFound)
+        w.Write([]byte(`{"message": "no produce with the produceCode provided"}`))
+        return
+    }
+    newProduceBytes, _ := json.Marshal(produce)
+    w.Write(newProduceBytes)
 }
 
 func main() {
     r := mux.NewRouter()
 
     api := r.PathPrefix("/api/v1").Subrouter()
-    api.HandleFunc("", get).Methods(http.MethodGet)
-    api.HandleFunc("", post).Methods(http.MethodPost)
-    api.HandleFunc("", put).Methods(http.MethodPut)
-    api.HandleFunc("", delete).Methods(http.MethodDelete)
+    produce := "/produce"
+    api.HandleFunc(produce, get).Methods(http.MethodGet)
+    api.HandleFunc(produce, post).Methods(http.MethodPost)
+    api.HandleFunc("/produce/{produceCode}", delete).Methods(http.MethodDelete)
 
-    api.HandleFunc("/produce/{produceCode}", params).Methods(http.MethodGet)
+    api.HandleFunc("/produce/{produceCode}", getOne).Methods(http.MethodGet)
 
     log.Fatal(http.ListenAndServe(":8080", r))
 }
