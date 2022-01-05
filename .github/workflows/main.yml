@@ -26,5 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: GP Security Scan
-      uses: whitesource/GitHubPackagesSecurityAction@19.10.2
+    - name: golang-security-action
+      uses: Ynniss/golang-security-action@v0.1.3
+      with:
+        CODE_PATH: ./...
