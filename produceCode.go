@@ -9,14 +9,14 @@ import (
 var seededRand *rand.Rand = rand.New(
   rand.NewSource(time.Now().UnixNano()))
 
-func StringWithCharset(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-  b := make([]byte, length)
+func produceCodeSubsetString() string {
+	const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
+  b := make([]byte, 4)
   for i := range b {
     b[i] = charset[seededRand.Intn(len(charset))]
   }
   return string(b)
 }
 func createProduceCode() string {
-	return fmt.Sprintf(`%s-%s-%s-%s`, StringWithCharset(4), StringWithCharset(4), StringWithCharset(4), StringWithCharset(4),)
+	return fmt.Sprintf(`%s-%s-%s-%s`, produceCodeSubsetString(), produceCodeSubsetString(), produceCodeSubsetString(), produceCodeSubsetString(),)
 }

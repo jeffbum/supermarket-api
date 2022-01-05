@@ -14,16 +14,15 @@ type CreateProduce struct {
 }
 
 type Produce struct {
-    ProduceCode string  `json:"produceCode"`
-    Name       string `json:"name"`
-    UnitPrice  string  `json:"unitPrice"`
+	ProduceCode string  `json:"produceCode"`
+	Name       string `json:"name"`
+	UnitPrice  string  `json:"unitPrice"`
 }
 
 var produceCollection = []Produce {
-    {"A7Fc-VgWD-7m5S-zb9Z","Apple","$1.23"},
-    {"IgGJ-hHGW-QrWe-sIGY","Orange","$2.45"},
+	{"A7Fc-VgWD-7m5S-zb9Z","Apple","$1.23"},
+	{"IgGJ-hHGW-QrWe-sIGY","Orange","$2.45"},
 }
-
 
 func get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -113,11 +112,9 @@ func main() {
     r := mux.NewRouter()
 
     api := r.PathPrefix("/api/v1").Subrouter()
-    produce := "/produce"
-    api.HandleFunc(produce, get).Methods(http.MethodGet)
-    api.HandleFunc(produce, post).Methods(http.MethodPost)
+    api.HandleFunc("/produce", get).Methods(http.MethodGet)
+    api.HandleFunc("/produce", post).Methods(http.MethodPost)
     api.HandleFunc("/produce/{produceCode}", delete).Methods(http.MethodDelete)
-
     api.HandleFunc("/produce/{produceCode}", getOne).Methods(http.MethodGet)
 
     log.Fatal(http.ListenAndServe(":8080", r))
