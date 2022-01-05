@@ -1,4 +1,5 @@
-name: site-security-scan
+name: Build & Test
+
 on:
   push:
     branches: [ main ]
@@ -6,9 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
   test:
     runs-on: ubuntu-latest
-    steps:     
+    steps:
+    - uses: actions/checkout@v2
     - name: OWASP ZAP Baseline Scan
       uses: zaproxy/action-baseline@v0.3.0
       with:
