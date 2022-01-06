@@ -1,5 +1,6 @@
 <div id="top"></div>
 
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -15,7 +16,7 @@
     <img src="./logo.png" alt="Logo" width="90" height="70">
   </a>
 
-<h3 align="center">supermarket-api</h3>
+[![Build][workflow-badge]][workflow-url]
 
   <p align="center">
     An API written in Golang to demostrate technical ability to write, document, and maintain an application.
@@ -141,3 +142,5 @@ Project Link: [https://github.com/jeffbum/supermarket-api](https://github.com/je
 [license-url]: https://github.com/jeffbum/supermarket-api/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/jeff-bumgardner
+[workflow-url]: https://github.com/jeffbum/supermarket-api/actions/workflows
+[workflow-badge]: https://github.com/jeffbum/supermarket-api/actions/workflows/main.yml/badge.svg
