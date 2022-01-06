@@ -42,8 +42,9 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
-        <li><a href="#run-locally">Run Locally
-        <li><a href="#run-in-docker-container">Run In Docker Container
+        <li><a href="#run-locally">Run Locally</a></li>
+        <li><a href="#run-in-docker-container">Run In Docker Container</a></li>
+        <li><a href="#curl-commands">Curl Commands</a></li>
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -82,7 +83,26 @@ This is an example of how to list things you need to use the software and how to
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- ROADMAP -->
+### Curl Commands
+Here are curl commands you can run to hit available endpoints:
+- GET all produce
+  ```sh
+   curl http://localhost:8080/api/v1/produce
+   ```
+- GET  produce by Id
+  ```sh
+   curl http://localhost:8080/api/v1/produce/L6M9-5P3N-Y5QR-LHEL
+   ```
+- POST create produce
+  ```sh
+   curl -X POST -H "Content-Type: application/json" \
+    -d '{"produceCode": "QWE1-QWE2-QWE3-QWE4, "name": "Muffin", "unitPrice": 5.67}' \
+    http://localhost:8080/api/v1/produce/
+   ```
+- DELETE produce by id
+  ```sh
+   curl -X DELETE http://localhost:8080/api/v1/produce/L6M9-5P3N-Y5QR-LHEL
+   ```
 ## Roadmap
 
 - Move handler functions to a Routes folder/package.
@@ -94,8 +114,6 @@ See the [open issues](https://github.com/jeffbum/supermarket-api/issues) for a f
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
@@ -104,18 +122,14 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 
-<!-- CONTACT -->
 ## Contact
 
-Jeff Bumgardner - bumgardner.jeffrey@gmail.com
+Jeff Bumgardner - <a href="mailto:bumgardner.jeffrey@gmail.com">bumgardner.jeffrey@gmail.com</a>
 
 Project Link: [https://github.com/jeffbum/supermarket-api](https://github.com/jeffbum/supermarket-api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/jeffbum/supermarket-api.svg?style=for-the-badge
 [contributors-url]: https://github.com/jeffbum/supermarket-api/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/jeffbum/supermarket-api.svg?style=for-the-badge
