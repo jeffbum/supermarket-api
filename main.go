@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -108,7 +109,7 @@ func getOne(w http.ResponseWriter, r *http.Request) {
         }
     }
     for _, p := range produceCollection {
-        if (p.ProduceCode == produceCode) {
+        if (strings.EqualFold(p.ProduceCode, produceCode)) {
             produce = p
         }
     }
