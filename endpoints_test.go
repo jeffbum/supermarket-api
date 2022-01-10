@@ -55,6 +55,31 @@ func TestGetProduceById(t *testing.T) {
 	}
 }
 
+func TestGetProduceByIdCasingDifferent(t *testing.T) {
+
+	req, err := http.NewRequest("GET", "api/v1/produce", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	vars := map[string]string{"produceCode": "L6M9-5P3N-Y5QR-lhel"}
+	req = mux.SetURLVars(req, vars)
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(getOne)
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+	// Check the response body is what we expect.
+	expected := `{"produceCode":"L6M9-5P3N-Y5QR-LHEL","name":"Apple","unitPrice":1.23}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+
 func TestGetProduceByIdNotFound(t *testing.T) {
 	req, err := http.NewRequest("GET", "/produce", nil)
 	if err != nil {
