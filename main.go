@@ -111,6 +111,7 @@ func getOne(w http.ResponseWriter, r *http.Request) {
     for _, p := range produceCollection {
         if (strings.EqualFold(p.ProduceCode, produceCode)) {
             produce = p
+            break
         }
     }
     if (produce.Name == "") {
